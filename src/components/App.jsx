@@ -12,40 +12,24 @@ import {
   Message,
 } from './App.styled';
 
+const initialState = [
+  { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+  { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+  { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+  { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+];
+
 export default function App() {
   const [contacts, setContacts] = useState(
-    JSON.parse(localStorage.getItem('contacts')) ?? []
+    JSON.parse(localStorage.getItem('contacts')) ?? initialState
   );
+  // оператор ?? перевіряє чи вираз зліва є null або undefined,
+  // тоді використовується initialState
   const [filter, setFilter] = useState('');
 
   useEffect(() => {
     localStorage.setItem('contacts', JSON.stringify(contacts));
   }, [contacts]);
-
-  // contacts: [
-  //   { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-  //   { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-  //   { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-  //   { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-  // ];
-
-  // componentDidMount() {
-  //   // console.log('App componentDidMount');
-  //   const contacts = localStorage.getItem('contacts');
-  //   const parsedContacts = JSON.parse(contacts);
-
-  //   if (parsedContacts) {
-  //     this.setState({ contacts: parsedContacts });
-  //   }
-  // }
-
-  // componentDidUpdate(prevProps, prevState) {
-  //   // console.log('App componentDidUpdate');
-  //   if (this.state.contacts !== prevState.contacts) {
-  //     // console.log('Оновилося поле contacts');
-  //     localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-  //   }
-  // }
 
   const addContact = ({ name, number }) => {
     const isAdded = contacts.find(
@@ -64,7 +48,7 @@ export default function App() {
     setContacts(prevContacts => [...prevContacts, newContact]);
   };
 
-  const getVisibleContacts = () => {
+  const visibleContacts = () => {
     const normalizedFilter = filter.toLowerCase();
 
     return contacts.filter(contact =>
@@ -82,8 +66,6 @@ export default function App() {
     );
   };
 
-  const visibleContacts = getVisibleContacts();
-
   return (
     <Container>
       <Title>Phonebook</Title>
@@ -99,7 +81,7 @@ export default function App() {
         <>
           <Filter value={filter} onChange={changeFilter} />
           <ContactList
-            contacts={visibleContacts}
+            contacts={visibleContacts()}
             deleteContact={deleteContact}
           />
         </>
